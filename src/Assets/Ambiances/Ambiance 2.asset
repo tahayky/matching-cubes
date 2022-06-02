@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: edb91c17995d21048af968173113c50b, type: 3}
+  m_Name: Ambiance 2
+  m_EditorClassIdentifier: 
+  skybox: {fileID: 2100000, guid: d62a3fccf56c8404c9cf35b797698762, type: 2}
+  building_material: {fileID: 2100000, guid: c9ce6df320a440f47ae48f346c42e511, type: 2}
+  lower_path_material: {fileID: 2100000, guid: 795f3c8bdbe8f1b44b160c8478275407, type: 2}
+  building_color: {r: 0.70854706, g: 0.40503737, b: 0.7735849, a: 1}
+  path_lower_color: {r: 0.9117019, g: 0.4669811, b: 1, a: 1}
+  sky_top_color: {r: 1, g: 1, b: 1, a: 1}
+  sky_bottom_color: {r: 0.7564692, g: 0.5333304, b: 0.8018868, a: 1}
