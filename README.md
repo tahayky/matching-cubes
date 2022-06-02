@@ -1,4 +1,4 @@
-# matching-cubes
+# Matching Cubes Case Project
 Özellik kullanımları:
 
 1.Ambiance(ScriptableObject):
