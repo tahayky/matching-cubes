@@ -1,5 +1,5 @@
 # Matching Cubes Case Project
-##Özellik kullanımları:
+##  Özellik kullanımları:
 
 ### 1.Ambiance(ScriptableObject):
 Gökyüzü, arkaplan binaları gibi renklendirilebilir öğelerin renklerini belirler. Asset olarak oluşturulur, pathBuilder'a entegre edilir.
