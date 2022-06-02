@@ -3,8 +3,8 @@
 
 ### 1.Ambiance(ScriptableObject):
 Gökyüzü, arkaplan binaları gibi renklendirilebilir öğelerin renklerini belirler. Asset olarak oluşturulur, pathBuilder'a entegre edilir.
-![alt text](https://github.com/tahayky/matching-cubes/blob/main/docs/ambiance.png?raw=true)
-![alt text](https://github.com/tahayky/matching-cubes/blob/main/docs/ambiances.png?raw=true)
+/r ![alt text](https://github.com/tahayky/matching-cubes/blob/main/docs/ambiance.png?raw=true)
+/r ![alt text](https://github.com/tahayky/matching-cubes/blob/main/docs/ambiances.png?raw=true)
 ### 2.PathBuilder(MonoBehaviour):
 Level pistini ifade eder.
 #### a.Ambiance(Ambiance):
