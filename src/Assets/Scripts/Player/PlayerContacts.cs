@@ -7,14 +7,14 @@ public class PlayerContacts : MonoBehaviour
 {
     #region Variables
     private Player player;
-    private StackingController stacking_controller;
+    private StackingManager stacking_controller;
     private PlayerPhysics player_physics;
     private PathFollower path_follower;
     #endregion
     private void Awake()
     {
         player = GetComponent<Player>();
-        stacking_controller = player.stacking_controller;
+        stacking_controller = GetComponent<StackingManager>();
         player_physics = player.player_physics;
         path_follower = player.path_follower;
     }
@@ -35,7 +35,7 @@ public class PlayerContacts : MonoBehaviour
     public void FinishContact()
     {
         player.Deactivate();
-        player.game_manager.LevelCompleted();
+        GameManager.Instance.LevelCompleted();
         stacking_controller.StopTrail();
     }
     public void ObstacleContact(GameObject obstacle_go)

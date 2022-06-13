@@ -4,88 +4,52 @@ using UnityEngine;
 using DG.Tweening;
 using MEC;
 [RequireComponent(typeof(PathFollower))]
-public class Player : MonoBehaviour
+[RequireComponent(typeof(StackingManager))]
+public class Player : Singleton<Player>
 {
     #region Variables
-    public GameManager game_manager;
+    public GameObject armature;
     public PlayerPhysics player_physics;
-    public StackingController stacking_controller;
+    [HideInInspector]
+    public StackingManager stacking_manager;
     [HideInInspector]
     public PathFollower path_follower;
     [HideInInspector]
     public float speed;
     [SerializeField]
-    private float min_speed,
+    private float
         turbo_speed,
-        turbo_duration,
-        jump_height,
-        jump_duration,
-        range,
-        sensivity,
-        smoothness_speed;
+        turbo_duration;
     [HideInInspector]
-    public bool turbo = false,
-        is_grounded = true;
-    [SerializeField]
-    private GameObject armature;
-    [SerializeField]
-    private Cinemachine.CinemachineVirtualCamera cam;
+    public bool turbo = false;
+    [HideInInspector]
+    public bool is_grounded = false;
+    [HideInInspector]
+    public bool active = false;
+    private PlayerMovement player_movement;
     private Animator animator;
-    private bool active = false;
-    private float move_aim=0;    //hedeflenen X pozisyonu
+    private PlayerInput player_input;
     private int order = 0;
     #endregion
     private void Awake()
     {
+        stacking_manager = GetComponent<StackingManager>();
         animator = armature.GetComponent<Animator>();
         path_follower = GetComponent<PathFollower>();
+        player_movement = GetComponent<PlayerMovement>();
     }
     void Start()
     {
         DOTween.Init(true, true, LogBehaviour.Default);
 
         player_physics.ReSizeCollider(Constants.player_height);
-
-        speed = min_speed;
-    }
-
-    void Update()
-    {
-        if (!active)
-            return;
-
-        //Hedef x pozisyonunu saða sola kaydýrma
-        if (Input.touchCount > 0)
-        {
-            Touch touch = Input.GetTouch(0);
-
-            if (touch.phase == TouchPhase.Moved)
-            {
-                float currentPosition = touch.deltaPosition.x / Screen.width;
-
-                move_aim += sensivity * currentPosition;
-
-                move_aim=Mathf.Clamp(move_aim, -range / 2f, range/ 2f);
-            }
-        }
-
-        float smooth_position = Mathf.Lerp(player_physics.transform.localPosition.x, move_aim, Time.deltaTime * smoothness_speed);
-        Vector3 new_position = new Vector3(smooth_position, player_physics.transform.localPosition.y) + Vector3.forward * speed * Time.deltaTime;
-        transform.Translate(new Vector3(0, 0, new_position.z));
-
-        player_physics.transform.localPosition =
-            new Vector3(
-                new_position.x
-                , new_position.y);
-
-
     }
     #region IEnumerators
     public IEnumerator<float> TurboTimer()
     {
         yield return Timing.WaitForSeconds(turbo_duration);
-        DOTween.To(() => Constants.turbo_fow, x => cam.m_Lens.FieldOfView = x, Constants.default_fow, 1f);
-        speed = min_speed;
+        DOTween.To(() => Constants.turbo_fow, x => GameManager.Instance.cam.m_Lens.FieldOfView = x, Constants.default_fow, 1f);
+        player_movement.SetSpeed(null);
         turbo = false;
     }
     #endregion
@@ -93,14 +57,14 @@ public class Player : MonoBehaviour
     #region Commands
     public void Turbo()
     {
-        DOTween.To(()=>Constants.default_fow, x=> cam.m_Lens.FieldOfView=x, Constants.turbo_fow, 1f);
-        speed = turbo_speed;
+        DOTween.To(()=>Constants.default_fow, x=> GameManager.Instance.cam.m_Lens.FieldOfView=x, Constants.turbo_fow, 1f);
+        player_movement.SetSpeed(turbo_speed);
         turbo = true;
         Timing.RunCoroutine(TurboTimer(),"turbo");
     }
     public void EndTurbo()
     {
-        speed = min_speed;
+        player_movement.SetSpeed(null);
         turbo = false;
         Timing.KillCoroutines("turbo");
     }
@@ -120,19 +84,9 @@ public class Player : MonoBehaviour
     }
     public void GoStart()
     {
-        stacking_controller.RemoveAll();
+        stacking_manager.RemoveAll();
         transform.position = Vector3.zero;
         Deactivate();
-    }
-    public void SetPosition(Vector3 new_position)
-    {
-        transform.position = new Vector3(0, 0, new_position.z);
-
-        player_physics.transform.localPosition =
-            new Vector3(
-                new_position.x
-                , new_position.y);
-
     }
 
     public void Fall()
@@ -141,8 +95,12 @@ public class Player : MonoBehaviour
         animator.ResetTrigger("reset");
         Pause();
         animator.SetTrigger("fall");
-        game_manager.LevelFailed();
-        stacking_controller.StopTrail();
+        GameManager.Instance.LevelFailed();
+        stacking_manager.StopTrail();
+    }
+    public void Jump()
+    {
+        player_movement.Jump();
     }
     public void Pause()
     {
@@ -151,14 +109,6 @@ public class Player : MonoBehaviour
     public void Resume()
     {
         active = true;
-    }
-    public void Jump()
-    {
-        DOTween.Sequence()
-            .AppendCallback(delegate { stacking_controller.DropTrail(); is_grounded = false; })
-            .Append(player_physics.transform.DOLocalMoveY(jump_height, jump_duration/2).SetEase(Ease.OutCirc))
-            .Append(player_physics.transform.DOLocalMoveY(0, jump_duration / 2).SetEase(Ease.InCirc))
-            .AppendCallback(delegate { stacking_controller.StartTrail(); is_grounded = true; });
     }
     public void Leap(int _cubes_count,float _cube_height)
     {

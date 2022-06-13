@@ -5,20 +5,21 @@ using System.Linq;
 using UnityEngine;
 using MEC;
 using DG.Tweening;
-public class StackingController : MonoBehaviour
+[RequireComponent(typeof(Player))]
+public class StackingManager : MonoBehaviour
 {
     #region Variables
     [SerializeField]
-    private Player player;
-    [SerializeField]
     private GameObject trail_prefab;
+    [SerializeField]
+    private Transform parent;
+    private Player player;
     private List<Cube> cubes;
     private TrailController current_trail;
-    private GameManager game_manager;
     #endregion
     private void Awake()
     {
-        game_manager = player.game_manager;
+        player = GetComponent<Player>();
         cubes = new List<Cube>();
     }
     private void Start()
@@ -175,7 +176,7 @@ public class StackingController : MonoBehaviour
     }
     public void CollectCube(Transform cube)
     {
-        cube.SetParent(this.transform);
+        cube.SetParent(parent);
         cube.GetComponent<Collider>().enabled = false;
         cube.transform.localPosition = Vector3.zero;
         
@@ -201,7 +202,7 @@ public class StackingController : MonoBehaviour
     {
         for (int i = 0; i < cubes.Count; i++)
         {
-            cubes[i].transform.parent = game_manager.current_level_go.transform;
+            cubes[i].transform.parent = GameManager.Instance.current_level_go.transform;
         }
         cubes.Clear();
 
@@ -211,7 +212,7 @@ public class StackingController : MonoBehaviour
     {
         for (int i=0;i<count;i++)
         {
-            cubes[cubes.Count - 1].transform.parent = game_manager.current_level_go.transform;
+            cubes[cubes.Count - 1].transform.parent = GameManager.Instance.current_level_go.transform;
             cubes.Remove(cubes[cubes.Count - 1]);
         }
 
@@ -221,7 +222,7 @@ public class StackingController : MonoBehaviour
     {
         DropTrail();
         Cube last_cube = cubes[cubes.Count - 1];
-        last_cube.transform.parent = game_manager.current_level_go.transform;
+        last_cube.transform.parent = GameManager.Instance.current_level_go.transform;
         cubes.Remove(last_cube);
         last_cube.transform.DOMove(last_cube.transform.position + player.transform.forward*5 + Vector3.down*2, 0.1f).SetEase(Ease.Linear);
         Refresh();
@@ -237,7 +238,7 @@ public class StackingController : MonoBehaviour
     {
         if (current_trail != null)
         {
-            current_trail.transform.parent = game_manager.current_level_go.transform;
+            current_trail.transform.parent = GameManager.Instance.current_level_go.transform;
             current_trail = null;
         }
     }
@@ -255,7 +256,7 @@ public class StackingController : MonoBehaviour
         }
         
 
-        GameObject trail_go = Instantiate(trail_prefab.gameObject, this.transform);
+        GameObject trail_go = Instantiate(trail_prefab.gameObject, parent);
         TrailController trail = trail_go.GetComponent<TrailController>();
         trail.color = _cube_color;
         current_trail = trail;

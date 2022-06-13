@@ -2,9 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GameManager : MonoBehaviour
+public class GameManager : StaticInstance<GameManager>
 {
     #region Variables
+    public Cinemachine.CinemachineVirtualCamera cam;
     [HideInInspector]
     public GameObject current_level_go;
     [SerializeField]
@@ -16,13 +17,11 @@ public class GameManager : MonoBehaviour
     private GameObject[] level_prefabs;
     private int current_level_index=0;
     #endregion
-    private void Awake()
-    {
-        int level = PlayerPrefs.GetInt("level",0);
-        current_level_index = level;
-    }
     private void Start()
     {
+        int level = PlayerPrefs.GetInt("level", 0);
+        current_level_index = level;
+
         LoadLevel(current_level_index);
 #if !UNITY_EDITOR
         QualitySettings.vSyncCount = 0;
@@ -39,13 +38,13 @@ public class GameManager : MonoBehaviour
 
             if (touch.phase == TouchPhase.Moved)
             {
-                Run();
+                _Start();
             }
 
         }
     }
     #region Commands
-    private void Run()
+    private void _Start()
     {
         game_started = true;
         player.Activate();

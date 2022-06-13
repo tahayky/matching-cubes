@@ -3,17 +3,20 @@ using System.Collections.Generic;
 using UnityEngine;
 using PathCreation;
 
+[RequireComponent(typeof(PlayerMovement))]
 [RequireComponent(typeof(Player))]
 public class PathFollower : MonoBehaviour
 {
     #region Variables
     private PathCreator pathCreator;
+    private PlayerMovement player_movement;
     private Player player;
     private float speed, dstTravelled;
     private bool active = false;
     #endregion
     private void Awake()
     {
+        player_movement = GetComponent<PlayerMovement>();
         player = GetComponent<Player>();
     }
     private void Update()
@@ -22,7 +25,7 @@ public class PathFollower : MonoBehaviour
         {
             dstTravelled += speed * Time.deltaTime;
             Vector3 point_at_distance = pathCreator.path.GetPointAtDistance(dstTravelled, EndOfPathInstruction.Stop);
-            player.SetPosition(point_at_distance+Vector3.up/3);
+            player_movement.Translate(point_at_distance+Vector3.up/3);
 
             if(dstTravelled>= pathCreator.path.length)
             {

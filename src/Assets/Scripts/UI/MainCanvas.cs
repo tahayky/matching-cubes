@@ -6,8 +6,6 @@ public class MainCanvas : MonoBehaviour
 {
     #region Variables
     [SerializeField]
-    private GameManager game_manager;
-    [SerializeField]
     private CanvasGroup level_completed_text_group;
     [SerializeField]
     private CanvasGroup next_button_group;
@@ -76,13 +74,13 @@ public class MainCanvas : MonoBehaviour
     }
     public void NextLevel()
     {
-        game_manager.NextLevel();
+        GameManager.Instance.NextLevel();
         HideElements();
     }
 
     public void RetryLevel()
     {
-        game_manager.RetryLevel();
+        GameManager.Instance.RetryLevel();
         HideElements();
     }
     #endregion

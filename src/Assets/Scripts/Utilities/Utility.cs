@@ -38,4 +38,5 @@ public class Constants
     public const float player_height = 3.5f;
     public const float default_fow = 60f;
     public const float turbo_fow = 70f;
+    public const float touch_movement_sensivity = 40f;
 }
