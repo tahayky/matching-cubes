@@ -118,7 +118,7 @@ Material:
     - _mult: 1
     - _pwer: 0.47
     m_Colors:
-    - _Bottom: {r: 1, g: 0.24056602, b: 0.24056602, a: 1}
+    - _Bottom: {r: 0.1462264, g: 0.3868876, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _GroundColor: {r: 0.369, g: 0.349, b: 0.341, a: 1}

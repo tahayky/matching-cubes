@@ -10,8 +10,6 @@ public class GameManager : StaticInstance<GameManager>
     public GameObject current_level_go;
     [SerializeField]
     private MainCanvas main_canvas;
-    [SerializeField]
-    private Player player;
     private bool game_started = false;
     [SerializeField]
     private GameObject[] level_prefabs;
@@ -47,12 +45,12 @@ public class GameManager : StaticInstance<GameManager>
     private void _Start()
     {
         game_started = true;
-        player.Activate();
+        Player.Instance.Activate();
 
     }
     private void LoadLevel(int index)
     {
-        player.GoStart();
+        Player.Instance.GoStart();
         Destroy(current_level_go);
         GameObject new_level_go = Instantiate(level_prefabs[index]);
         current_level_go = new_level_go;
